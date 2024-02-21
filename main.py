@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import requests
 
 vulnerable_app = Flask(__name__)
@@ -9,26 +9,26 @@ def greeting():
 
 @vulnerable_app.route('/vulnerable-route')
 def vulnerable_route():
-    # url = request.args.get('url', '')
-    # if url:
-    #     return requests.get(url).text
+    url = request.args.get('url', '')
+    if url:
+        return requests.get(url).text
 
     return "No URL parameter provided."
 
 @vulnerable_app.route('/')
 def home():
-    return 'vulnerable home route'
-    # return '''<h1>SSRF</h1>
-    #             <br>
-    #             Usage:
-    #                 <br><code>http://127.0.0.1:80/follow?url=https://api.github.com/events</code><br>
-    #             Running:
-    #             <br><code>
-    #                 sudo apt install -y python3-pip
-    #                 sudo pip3 install flask requests;
-    #                 FLASK_APP=ssrf.py flask run --host=0.0.0.0 --port=80
-    #             </code></br>
-    # '''
+    # return 'vulnerable home route'
+    return '''<h1>SSRF</h1>
+                <br>
+                Usage:
+                    <br><code>http://127.0.0.1:80/vulnerable-route?url=https://api.github.com/events</code><br>
+                Running:
+                <br><code>
+                    sudo apt install -y python3-pip
+                    sudo pip3 install flask requests;
+                    FLASK_APP=main.py flask run --host=0.0.0.0 --port=80
+                </code></br>
+    '''
 
 
 if __name__ == '__main__':
