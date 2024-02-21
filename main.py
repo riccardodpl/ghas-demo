@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import requests
 
 vulnerable_app = Flask(__name__)
@@ -7,13 +7,13 @@ vulnerable_app = Flask(__name__)
 def greeting():
     return 'Hello, World!'
 
-@vulnerable_app.route('/vulnerable-route')
-def vulnerable_route():
-    # url = request.args.get('url', '')
-    # if url:
-    #     return requests.get(url).text
-
-    return "No URL parameter provided."
+@vulnerable_app.route("/user_picture1")
+# from: https://codeql.github.com/codeql-query-help/python/py-path-injection/#example
+def user_picture1():
+    filename = request.args.get('p')
+    # BAD: This could read any file on the file system
+    data = open(filename, 'rb').read()
+    return data
 
 @vulnerable_app.route('/')
 def home():
